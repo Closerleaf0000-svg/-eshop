@@ -1,0 +1,61 @@
+
+# ==========================================
+# Docker Compose 設定檔 (PostgreSQL 版本)
+# ==========================================
+version: '3.8'
+
+services:
+  # ==========================================
+  # 服務一：Spring Boot 後端應用容器
+  # ==========================================
+  web-app:
+    # 依你實際使用的 JDK 映像檔調整（例如 openjdk:17-jdk-slim 或 eclipse-temurin:17-jdk-alpine）
+    image: eclipse-temurin:17-jdk-alpine
+    container_name: spring-boot-backend
+    ports:
+      - "8888:8888"          # 主機 8888 → 容器 8888
+    volumes:
+      # 將本地打包好的 JAR 掛載進容器
+      - ./target/eshop-0.0.1-SNAPSHOT.jar:/app/app.jar
+    working_dir: /app
+    command: >
+      java -jar app.jar
+      --spring.profiles.active=prod
+    depends_on:
+      - postgres-db          # 確保 PostgreSQL 先啟動
+    restart: on-failure      # 失敗時自動重啟
+    networks:
+      - app-network          # 使用自訂網路
+
+  # ==========================================
+  # 服務二：PostgreSQL 資料庫容器
+  # ==========================================
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: postgres-database 
+    ports:
+      - "5432:5432" 
+    environment:
+      POSTGRES_DB: proddb
+      POSTGRES_USER: postgres 
+      POSTGRES_PASSWORD: Fr1597530 
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # 資料持久化 
+    restart: always                  # 總是保持運行
+    networks:
+      - app-network
+
+# ==========================================
+# 資料卷宣告（持久化儲存）
+# ==========================================
+volumes:
+  postgres_data:
+
+# ==========================================
+# 網路宣告（讓容器間通訊）
+# ==========================================
+networks:
+  app-network:
+    driver: bridge
+
+
