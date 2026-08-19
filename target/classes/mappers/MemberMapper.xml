@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.eshop.mapper.MemberMapper">
+
+    <!-- 依帳號查詢會員 -->
+    <select id="findByUsername"
+        parameterType="String"
+        resultType="com.example.eshop.entity.Member">
+
+    SELECT
+        member_id,
+        username,
+        password,
+        email,
+        phone
+    FROM member
+    WHERE username = #{username}
+
+    </select>
+
+
+    <!-- 依 Email 查詢會員 -->
+    <select id="findByEmail"
+        parameterType="String"
+        resultType="com.example.eshop.entity.Member">
+
+    SELECT
+        member_id,
+        username,
+        password,
+        email,
+        phone
+    FROM member
+    WHERE email = #{email}
+
+    </select>
+
+
+    <!-- 檢查 Email 是否已存在 -->
+    <select id="existsByEmail"
+        parameterType="String"
+        resultType="boolean">
+
+    SELECT COUNT(*) > 0
+    FROM member
+    WHERE email = #{email}
+
+    </select>
+
+
+    <!-- 新增會員 -->
+    <insert id="insert"
+        parameterType="com.example.eshop.entity.Member"
+        useGeneratedKeys="true"
+        keyProperty="memberId">
+
+    INSERT INTO member
+    (
+        username,
+        password,
+        email,
+        phone
+    )
+    VALUES
+    (
+        #{username},
+        #{password},
+        #{email},
+        #{phone}
+    )
+
+    </insert>
+</mapper>

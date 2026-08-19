@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.eshop.mapper.OrderMapper">
+
+    <!-- 建立訂單 -->
+    <insert id="insertOrder"
+        parameterType="com.example.eshop.entity.Order"
+        useGeneratedKeys="true"
+        keyProperty="orderId">
+
+    INSERT INTO orders
+    (
+        username,
+        total_amount,
+        payment_method
+    )
+    VALUES
+    (
+        #{username},
+        #{totalAmount},
+        #{paymentMethod}
+    )
+
+    </insert>
+
+    <!-- 查詢訂單 -->
+    <select id="findByOrderId"
+        parameterType="long"
+        resultType="com.example.eshop.entity.Order">
+
+    SELECT
+        order_id,
+        username,
+        total_amount,
+        payment_method
+    FROM orders
+    WHERE order_id = #{orderId}
+
+    </select>
+
+</mapper>

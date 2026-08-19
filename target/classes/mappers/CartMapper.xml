@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.eshop.mapper.CartMapper">
+
+    <!-- 新增商品至購物車 -->
+    <insert id="insert"
+            parameterType="com.example.eshop.entity.Cart"
+            useGeneratedKeys="true" keyProperty="cartId">
+  
+        INSERT INTO cart
+        (
+            cart_id
+            member_id,
+            product_id,
+            product_name,
+            quantity
+        )
+        VALUES
+        (
+            #{member_id},
+            #{productId},
+            #{productName},
+            #{quantity}
+        );
+
+    </insert>
+
+    <!-- 查詢指定會員的購物車內容 -->
+    <select id="findByMemberId"
+            resultType="com.example.eshop.entity.Cart">
+
+        SELECT
+            cart_id AS cartId,
+            product_id AS productId,
+            quantity,
+            member_id AS memberId
+        FROM cart
+        WHERE member_id = #{memberId}
+
+    </select>
+
+    <!-- 修改指定商品的購買數量 -->
+    <update id="updateQuantity">
+
+        UPDATE cart
+        SET quantity = #{quantity}
+        WHERE member_id = #{member_id}
+          AND product_id = #{productId};
+
+    </update>
+
+    <!-- 商品數量 +1 -->
+    <update id="increaseQuantity">
+
+        UPDATE cart
+        SET quantity = quantity + 1
+        WHERE member_id = #{member_id}
+          AND product_id = #{productId};
+
+    </update>
+
+    <!-- 商品數量 -1 -->
+    <update id="decreaseQuantity">
+
+        UPDATE cart
+        SET quantity = quantity - 1
+        WHERE member_id = #{member_id}
+          AND product_id = #{productId}
+          AND quantity > 1;
+
+    </update>
+
+    <!-- 從購物車移除指定商品 -->
+    <delete id="deleteCartItem">
+
+        DELETE FROM cart
+        WHERE member_id = #{member_id}
+          AND product_id = #{productId};
+
+    </delete>
+
+</mapper>

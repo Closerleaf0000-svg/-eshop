@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.eshop.mapper.ProductMapper">
+
+    <!-- 查詢全部商品 -->
+    <select id="findAll"
+            resultType="com.example.eshop.entity.Product">
+
+        SELECT
+            product_id,
+            product_name,
+            product_price,
+            product_image,
+            product_description,
+            product_stock,
+            product_category
+        FROM product
+
+    </select>
+
+
+    <!-- 商品名稱關鍵字搜尋 -->
+    <select id="searchByProductName"
+            resultType="com.example.eshop.entity.Product">
+
+        SELECT
+            product_id,
+            product_name,
+            product_price,
+            product_image,
+            product_description,
+            product_stock,
+            product_category
+        FROM product
+        WHERE product_name LIKE CONCAT('%', #{keyword}, '%')
+
+    </select>
+
+
+    <!-- 根據商品 ID 查詢單一商品 -->
+    <select id="findByProductId"
+            parameterType="long"
+            resultType="com.example.eshop.entity.Product">
+
+        SELECT
+            product_id,
+            product_name,
+            product_price,
+            product_image,
+            product_description,
+            product_stock,
+            product_category
+        FROM product
+        WHERE product_id = #{productId}
+
+    </select>
+
+</mapper>
