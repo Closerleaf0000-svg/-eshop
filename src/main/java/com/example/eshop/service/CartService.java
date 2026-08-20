@@ -14,16 +14,28 @@ public class CartService {
         this.cartMapper = cartMapper;
     }
 
-    // 查詢會員購物車所有商品
-    public List<Cart> getCart(String username) {
+    // 加入購物車
+    public void addToCart(Cart cart) {
 
-        return cartMapper.findByUsername(username);
+        // 商品數量不可小於等於 0
+        if (cart.getQuantity() <= 0) {
+            throw new RuntimeException("商品數量必須大於0");
+        }
+
+        // 將商品加入購物車
+        cartMapper.insert(cart);
+    }
+
+    // 查詢會員購物車所有商品
+    public List<Cart> getCart(Long memberId) {
+
+        return cartMapper.findByMemberId(memberId);
 
     }
 
     // 修改商品購買數量
     public void updateQuantity(
-            String username,
+            Long memberId,
             Long productId,
             Integer quantity) {
 
@@ -33,18 +45,18 @@ public class CartService {
         }
 
         cartMapper.updateQuantity(
-                username,
+                memberId,
                 productId,
                 quantity);
     }
 
     // 移除購物車商品
     public void removeCartItem(
-            String username,
+            Long memberId,
             Long productId) {
 
         cartMapper.deleteCartItem(
-                username,
+                memberId,
                 productId);
 
     }
