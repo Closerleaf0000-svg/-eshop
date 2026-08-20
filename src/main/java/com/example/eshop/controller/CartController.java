@@ -4,6 +4,7 @@ import com.example.eshop.entity.Cart;
 import com.example.eshop.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -17,14 +18,32 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    // 查詢自己的購物車
+    // 加入購物車
+    @PostMapping
+    public void addToCart(
+            @RequestBody Cart cart,
+            HttpSession session) {
+
+        // 從 Session 取得目前登入會員的 ID
+        Long memberId = (Long) session.getAttribute("memberId");
+
+        // 將會員 ID 放入購物車資料
+        cart.setMemberId(memberId);
+
+        // 加入購物車
+        cartService.addToCart(cart);
+    }
+
+    // 查詢目前登入會員自己的購物車
     @GetMapping
-    public List<Cart> getMyCart(HttpSession session) {
+    public List<Cart> getMyCart(
+            HttpSession session) {
 
-        String username = (String) session.getAttribute("username");
+        // 從 Session 取得目前登入會員的 ID
+        Long memberId = (Long) session.getAttribute("memberId");
 
-        return cartService.getCart(username);
-
+        // 查詢該會員的購物車
+        return cartService.getCart(memberId);
     }
 
     // 修改商品數量
@@ -34,10 +53,12 @@ public class CartController {
             @RequestParam Integer quantity,
             HttpSession session) {
 
-        String username = (String) session.getAttribute("username");
+        // 從 Session 取得目前登入會員的 ID
+        Long memberId = (Long) session.getAttribute("memberId");
 
+        // 修改該會員指定商品的數量
         cartService.updateQuantity(
-                username,
+                memberId,
                 productId,
                 quantity);
     }
@@ -48,13 +69,14 @@ public class CartController {
             @PathVariable Long productId,
             HttpSession session) {
 
-        String username = (String) session.getAttribute("username");
+        // 從 Session 取得目前登入會員的 ID
+        Long memberId = (Long) session.getAttribute("memberId");
 
+        // 移除該會員指定的商品
         cartService.removeCartItem(
-                username,
+                memberId,
                 productId);
 
         return "商品已移除";
-
     }
 }
