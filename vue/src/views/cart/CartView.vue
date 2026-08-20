@@ -1,15 +1,21 @@
 <script setup>
 
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '../../stores/cart'
 
 const router = useRouter() // 取得目前網址的路由資訊
 const cartStore = useCartStore() // 取得購物車 Store
+console.log('cartStore:', cartStore)
+console.log('cartStore.items:', cartStore.items)
+
+onMounted(() => {
+  cartStore.fetchCart()
+})
 
 // 購物車商品
 const cartItems = computed(() => {
-  return cartStore.items
+  return cartStore.items || []
 })
 
 // 購物車總金額
