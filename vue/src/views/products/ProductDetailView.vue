@@ -90,10 +90,10 @@ function handleAddToCart() {
 }
 
 // 加入購物車
-function addToCart() {
+async function addToCart() {
 
   // 將目前商品與加入數量加入購物車
-  cartStore.addToCart(
+  await cartStore.addToCart(
     product.value,
     quantity.value
   )
@@ -116,9 +116,6 @@ const totalPrice = computed(() => {
 
 })
 
-onMounted(() => {
-  fetchProduct()
-})
 </script>
 
 
