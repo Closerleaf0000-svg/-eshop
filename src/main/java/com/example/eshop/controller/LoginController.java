@@ -38,13 +38,13 @@ public class LoginController {
         }
 
         // 登入成功，存入 Session
-        session.setAttribute("userId", loginMember.getMemberId());
+        session.setAttribute("memberId", loginMember.getMemberId());
         session.setAttribute("username", loginMember.getUsername());
         session.setAttribute("email", loginMember.getEmail());
 
         result.put("success", true);
         result.put("message", "登入成功");
-        result.put("userId", loginMember.getMemberId());
+        result.put("memberId", loginMember.getMemberId());
         result.put("username", loginMember.getUsername());
         result.put("email", loginMember.getEmail());
 
