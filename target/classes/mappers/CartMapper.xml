@@ -12,17 +12,14 @@
   
         INSERT INTO cart
         (
-            cart_id
             member_id,
             product_id,
-            product_name,
             quantity
         )
         VALUES
         (
-            #{member_id},
+            #{memberId},
             #{productId},
-            #{productName},
             #{quantity}
         );
 
@@ -30,15 +27,22 @@
 
     <!-- 查詢指定會員的購物車內容 -->
     <select id="findByMemberId"
+            parameterType="Long"
             resultType="com.example.eshop.entity.Cart">
 
         SELECT
-            cart_id AS cartId,
-            product_id AS productId,
-            quantity,
-            member_id AS memberId
+            cart.cart_id AS cartId,
+            cart.member_id AS memberId,
+            cart.product_id AS productId,
+            product.product_name AS productName,
+            product.product_price AS productPrice,
+            product.product_image AS productImage,
+            product.product_stock AS productStock,
+        cart.quantity AS quantity
         FROM cart
-        WHERE member_id = #{memberId}
+        JOIN product ON cart.product_id = product.product_id
+
+        WHERE cart.member_id = #{memberId};
 
     </select>
 
@@ -47,7 +51,7 @@
 
         UPDATE cart
         SET quantity = #{quantity}
-        WHERE member_id = #{member_id}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId};
 
     </update>
@@ -57,7 +61,7 @@
 
         UPDATE cart
         SET quantity = quantity + 1
-        WHERE member_id = #{member_id}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId};
 
     </update>
@@ -67,7 +71,7 @@
 
         UPDATE cart
         SET quantity = quantity - 1
-        WHERE member_id = #{member_id}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId}
           AND quantity > 1;
 
@@ -77,7 +81,7 @@
     <delete id="deleteCartItem">
 
         DELETE FROM cart
-        WHERE member_id = #{member_id}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId};
 
     </delete>
