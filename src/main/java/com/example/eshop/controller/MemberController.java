@@ -17,21 +17,19 @@ public class MemberController {
 
         Map<String, Object> result = new HashMap<>();
 
-        Object userId = session.getAttribute("userId");
+        Object memberId = session.getAttribute("memberId");
 
         Object username = session.getAttribute("username");
 
         // 沒有登入
-        if (userId == null) {
-
+        if (memberId == null) {
             result.put("loggedIn", false);
-
             return result;
         }
 
         // 已登入
         result.put("loggedIn", true);
-        result.put("userId", userId);
+        result.put("memberId", memberId);
         result.put("username", username);
 
         return result;
