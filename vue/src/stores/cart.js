@@ -1,15 +1,21 @@
 import { defineStore } from 'pinia'
+import axiosInstance from '../api/axiosInstance'
+import { computed, onMounted } from 'vue'
 
 export const useCartStore = defineStore('cart', {
 
   // 購物車資料
   state: () => ({
-
-    // 頁面重新整理時，從 localStorage 讀取購物車
-    items: JSON.parse(
-      localStorage.getItem('cartItems') || '[]'
-    )
-  }),
+  items: [
+    {
+      productId: 999,
+      productName: '測試商品',
+      productPrice: 100,
+      productStock: 10,
+      quantity: 1
+    }
+  ]
+}),
 
   getters: {
 
@@ -28,8 +34,7 @@ export const useCartStore = defineStore('cart', {
 
       return state.items.reduce(
         (total, item) =>
-          total +
-          item.productPrice * item.quantity,
+          total + item.productPrice * item.quantity,
         0
       )
     }
@@ -37,66 +42,91 @@ export const useCartStore = defineStore('cart', {
 
   actions: {
 
-        // 儲存購物車資料到 localStorage
-    saveCart() {
+    // 查詢目前登入會員的購物車
+  async fetchCart() {
 
-      localStorage.setItem(
-        'cartItems',
-        JSON.stringify(this.items)
-      )
-    },
+  try {
+
+    const response =
+      await axiosInstance.get('/cart')
+
+    this.items = response
+
+  } catch (error) {
+
+    console.error(
+      '取得購物車失敗：',
+      error
+    )
+
+    this.items = []
+  }
+},
 
     // 加入購物車
-    addToCart(product, quantity) {
+    async addToCart(product, quantity) {
 
-      // 尋找購物車中是否已經有這個商品
-      const existingItem =
-        this.items.find(
-          item =>
-            item.productId === product.productId
-        )
+      try {
 
-      // 如果已經存在
-      if (existingItem) {
+        await axiosInstance.post('/cart', {
 
-        // 增加商品數量
-        existingItem.quantity += quantity
-
-        // 不可以超過庫存
-        if (
-          existingItem.quantity >
-          product.productStock
-        ) {
-
-          existingItem.quantity =
-            product.productStock
-        }
-      } else {
-
-        // 第一次加入購物車
-        this.items.push({
           productId:
             product.productId,
-          productName:
-            product.productName,
-          productPrice:
-            product.productPrice,
-          productImage:
-            product.productImage,
-          productStock:
-            product.productStock,
+
           quantity:
             quantity
 
         })
+
+        // 加入成功後重新取得購物車
+        await this.fetchCart()
+
+      } catch (error) {
+
+        console.error(
+          '加入購物車失敗：',
+          error
+        )
       }
-      // 更新 localStorage
-      this.saveCart()
     },
 
+    // 修改商品數量
+    async updateQuantity(
+      productId,
+      quantity
+    ) {
+
+      try {
+
+        await axiosInstance.put(
+          '/cart',
+          null,
+          {
+            params: {
+              productId:
+                productId,
+
+              quantity:
+                quantity
+            }
+          }
+        )
+
+        // 更新成功後重新取得購物車
+        await this.fetchCart()
+
+      } catch (error) {
+
+        console.error(
+          '修改購物車數量失敗：',
+          error
+        )
+      }
+    },
 
     // 增加商品數量
-    increaseQuantity(productId) {
+    async increaseQuantity(productId) {
+
       const item =
         this.items.find(
           item =>
@@ -106,23 +136,15 @@ export const useCartStore = defineStore('cart', {
       if (!item) {
         return
       }
-
-      // 不可以超過商品庫存
-      if (
-        item.quantity <
-        item.productStock
-      ) {
-        item.quantity++
-
-      // 更新 localStorage
-        this.saveCart()
-
-      }
+      await this.updateQuantity(
+        productId,
+        item.quantity + 1
+      )
     },
 
-
     // 減少商品數量
-    decreaseQuantity(productId) {
+    async decreaseQuantity(productId) {
+
       const item =
         this.items.find(
           item =>
@@ -134,31 +156,40 @@ export const useCartStore = defineStore('cart', {
       }
 
       // 最少只能有 1 個
-      if (item.quantity > 1) {
-        item.quantity--
-
-        // 更新 localStorage
-        this.saveCart()
+      if (item.quantity <= 1) {
+        return
       }
+
+      await this.updateQuantity(
+        productId,
+        item.quantity - 1
+      )
     },
 
-    // 移除商品
-    removeItem(productId) {
-      this.items =
-        this.items.filter(
-          item =>
-            item.productId !== productId
+    // 移除購物車商品
+    async removeItem(productId) {
+
+      try {
+
+        await axiosInstance.delete(
+          `/cart/${productId}`
         )
-        // 更新 localStorage
-        this.saveCart()
+
+        // 移除成功後重新取得購物車
+        await this.fetchCart()
+
+      } catch (error) {
+
+        console.error(
+          '移除購物車商品失敗：',
+          error
+        )
+      }
     },
 
     // 清空購物車
     clearCart() {
       this.items = []
-      
-      // 清除 localStorage
-      localStorage.removeItem('cartItems')
     }
   }
 })
