@@ -12,34 +12,37 @@
   
         INSERT INTO cart
         (
-            cart_id
-            username,
+            member_id,
             product_id,
-            product_name,
             quantity
         )
         VALUES
         (
-            #{username},
+            #{memberId},
             #{productId},
-            #{productName},
             #{quantity}
         );
 
     </insert>
 
     <!-- 查詢指定會員的購物車內容 -->
-    <select id="findByUsername"
-            parameterType="String"
+    <select id="findByMemberId"
+            parameterType="Long"
             resultType="com.example.eshop.entity.Cart">
 
         SELECT
-            username,
-            product_id,
-            product_name,
-            quantity
+            cart.cart_id AS cartId,
+            cart.member_id AS memberId,
+            cart.product_id AS productId,
+            product.product_name AS productName,
+            product.product_price AS productPrice,
+            product.product_image AS productImage,
+            product.product_stock AS productStock,
+        cart.quantity AS quantity
         FROM cart
-        WHERE username = #{username};
+        JOIN product ON cart.product_id = product.product_id
+
+        WHERE cart.member_id = #{memberId};
 
     </select>
 
@@ -48,7 +51,7 @@
 
         UPDATE cart
         SET quantity = #{quantity}
-        WHERE username = #{username}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId};
 
     </update>
@@ -58,7 +61,7 @@
 
         UPDATE cart
         SET quantity = quantity + 1
-        WHERE username = #{username}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId};
 
     </update>
@@ -68,7 +71,7 @@
 
         UPDATE cart
         SET quantity = quantity - 1
-        WHERE username = #{username}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId}
           AND quantity > 1;
 
@@ -78,7 +81,7 @@
     <delete id="deleteCartItem">
 
         DELETE FROM cart
-        WHERE username = #{username}
+        WHERE member_id = #{memberId}
           AND product_id = #{productId};
 
     </delete>
