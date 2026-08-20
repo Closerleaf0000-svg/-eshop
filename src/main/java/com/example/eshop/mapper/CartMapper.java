@@ -12,27 +12,27 @@ public interface CartMapper {
         void insert(Cart cart);
 
         // 查詢會員購物車
-        List<Cart> findByUsername(@Param("username") String username);
+        List<Cart> findByMemberId(@Param("memberId") Long memberId);
 
         // 修改商品數量
         void updateQuantity(
-                        @Param("username") String username,
+                        @Param("memberId") Long memberId,
                         @Param("productId") Long productId,
                         @Param("quantity") Integer quantity);
 
         // 商品數量 +1
         void increaseQuantity(
-                        @Param("username") String username,
+                        @Param("memberId") Long memberId,
                         @Param("productId") Long productId);
 
         // 商品數量 -1
         void decreaseQuantity(
-                        @Param("username") String username,
+                        @Param("memberId") Long memberId,
                         @Param("productId") Long productId);
 
         // 移除購物車商品
         void deleteCartItem(
-                        @Param("username") String username,
+                        @Param("memberId") Long memberId,
                         @Param("productId") Long productId);
 
 }
