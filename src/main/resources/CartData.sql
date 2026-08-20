@@ -1,6 +1,5 @@
 INSERT INTO cart
-(username,product_id,quantity) VALUES
-('AAA',1,1),
-('AAA',2,2),
-('BBB',3,1),
-('CCC',4,3);
+(member_id,product_id,quantity) VALUES
+(1,1,1),
+(2,2,2),
+(3,3,1);
