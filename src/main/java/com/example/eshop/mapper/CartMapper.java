@@ -12,7 +12,13 @@ public interface CartMapper {
         void insert(Cart cart);
 
         // 查詢會員購物車
-        List<Cart> findByMemberId(@Param("memberId") Long memberId);
+        List<Cart> findByMemberId(
+                        @Param("memberId") Long memberId);
+
+        // 查詢會員購物車中是否已經有指定商品
+        Cart findByMemberIdAndProductId(
+                        @Param("memberId") Long memberId,
+                        @Param("productId") Long productId);
 
         // 修改商品數量
         void updateQuantity(
