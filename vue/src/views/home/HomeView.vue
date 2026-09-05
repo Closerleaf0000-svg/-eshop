@@ -1,3 +1,7 @@
+<script setup>
+console.log('HomeView 載入了')
+</script>
+
 <template>
   <div class="home">
     <h1>(ﾟ∀。) Shop</h1>
