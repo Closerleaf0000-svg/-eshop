@@ -11,7 +11,6 @@ public class Cart {
     private BigDecimal productPrice;
     private String productImage;
     private Integer productStock;
-
     private Integer quantity;
 
     public Cart() {
