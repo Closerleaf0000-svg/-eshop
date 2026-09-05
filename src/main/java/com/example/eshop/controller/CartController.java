@@ -4,7 +4,6 @@ import com.example.eshop.entity.Cart;
 import com.example.eshop.service.CartService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
