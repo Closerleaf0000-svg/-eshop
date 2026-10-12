@@ -52,7 +52,7 @@ EShop/
 │   │   │   ├── java/
 │   │   │   └── resources/
 │   │   └── test/
-│   ├── pom.xml
+│   └── pom.xml
 │
 └── eshop-frontend/
     ├── src/
